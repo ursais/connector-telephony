@@ -139,7 +139,7 @@ class Voicent():
         res = self.postToGateway(urlstr, params)
         return ast.literal_eval(res)
 
-    def importAndRunCampaign(self, filepath, msginfo):
+    def importAndRunCampaign(self, filepath, msgtype, msginfo):
         urlstr = "/ocall/campapi"
         params = {
             'action': 'bbp',
@@ -157,7 +157,7 @@ class Voicent():
             'calldisps': '',
             'callerid': '+18884728568',
             # Parameters for Autodialer
-            'msgtype': 'tts',
+            'msgtype': msgtype,
             'msginfo': msginfo,
         }
         files = {
