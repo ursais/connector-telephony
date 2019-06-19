@@ -12,9 +12,12 @@ class TestBackendVoicent(TransactionCase):
         self.backend_voicent_model = self.env['backend.voicent']
 
         self.backend_voicent_id = self.backend_voicent_model.create(
-            {'host': 'localhost',
+            {'name': 'Test',
+             'host': 'localhost',
              'port': '8155',
-             'is_active': True,
+             'callerid': '0000000000',
+             'line': '1',
+             'active': True,
              'call_line_ids': [(0, 0,
                                 {'name': 'call 1',
                                  'applies_on': False,
@@ -31,4 +34,4 @@ class TestBackendVoicent(TransactionCase):
 
     def test_run_check_the_voicent_status(self):
         """To call the scheduler method."""
-        self.backend_voicent_id._run_check_the_voicent_status()
+        self.backend_voicent_id._run_update_next_call()

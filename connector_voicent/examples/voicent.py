@@ -11,9 +11,12 @@ import ast
 
 class Voicent():
 
-    def __init__(self, host="localhost", port="8155"):
+    def __init__(self, host="localhost", port="8155", callerid="000000000",
+                 line="1"):
         self.host_ = host
         self.port_ = port
+        self.callerid_ = callerid
+        self.line_ = line
 
     def postToGateway(self, urlstr, params, files=None):
         url = "http://" + self.host_ + ":" + self.port_ + urlstr
@@ -22,11 +25,11 @@ class Voicent():
 
     def getReqId(self, rcstr):
         index1 = rcstr.find("[ReqId=")
-        if (index1 == -1):
+        if index1 == -1:
             return ""
         index1 += 7
         index2 = rcstr.find("]", index1)
-        if (index2 == -1):
+        if index2 == -1:
             return ""
         return rcstr[index1:index2]
 
@@ -132,9 +135,9 @@ class Voicent():
             'CAMP_NAME': 'Test',
             'listname': listname,
             'phonecols': 'Phone',
-            'lines': '4',
+            'lines': self.line_,
             'calldisps': '',
-            'callerid': '+18884728568',
+            'callerid': self.callerid_,
         }
         res = self.postToGateway(urlstr, params)
         return ast.literal_eval(res)
@@ -149,13 +152,13 @@ class Voicent():
             # 'profile': 'Test',
             'mod': 'cus',
             'row1': 1,
-            'leadsrcname': 'Test',
+            'leadsrcname': 'Odoo Voicent Connector',
             # Parameters for running the campaign
-            'CAMP_NAME': 'Test',
+            'CAMP_NAME': 'Odoo Voicent Connector',
             'phonecols': 'Phone',
-            'lines': '4',
+            'lines': self.line_,
             'calldisps': '',
-            'callerid': '+18884728568',
+            'callerid': self.callerid_,
             # Parameters for Autodialer
             'msgtype': msgtype,
             'msginfo': msginfo,
@@ -166,11 +169,11 @@ class Voicent():
         res = self.postToGateway(urlstr, params, files)
         return ast.literal_eval(res)
 
-    def checkStatus(self, leadsrc_id):
+    def checkStatus(self, camp_id):
         urlstr = "/ocall/campapi"
         params = {
             'action': 'campstats',
-            'leadsrc_id': leadsrc_id
+            'camp_id': camp_id
         }
         res = self.postToGateway(urlstr, params)
         return ast.literal_eval(res)
@@ -179,7 +182,7 @@ class Voicent():
         urlstr = "/ocall/campapi"
         params = {
             'action': 'exportcamp',
-            'camp_id_id': camp_id,
+            'camp_id': camp_id,
             'f': filename,
             'extracols': extracols
         }
