@@ -15,8 +15,8 @@ class BackendVoicent(models.Model):
     _inherit = ['connector.backend']
 
     name = fields.Char(string='Name', required=True)
-    host = fields.Char(string='Host', required=True)
-    port = fields.Integer(string='Port', required=True)
+    host = fields.Char(string='Host', default='localhost', required=True)
+    port = fields.Integer(string='Port', default='8155', required=True)
     callerid = fields.Char(string='Caller ID', required=True)
     line = fields.Integer(string='Number of lines', required=True)
     next_call = fields.Datetime(string='Next Call', copy=False)
