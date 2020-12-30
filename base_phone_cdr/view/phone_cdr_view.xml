@@ -5,7 +5,7 @@
         <field name="name">view.phone.cdr.form</field>
         <field name="model">phone.cdr</field>
         <field name="arch" type="xml">
-            <form string="Phone CDR" edit="false" create="false" delete="false">
+            <form string="Phone CDR" edit="true" create="true" delete="true">
                 <sheet>
                     <group cols="4">
                         <field name="guid" />
@@ -15,6 +15,8 @@
                         <field name="ring_time" />
                         <field name="caller_id" />
                         <field name="caller_id_name" />
+                        <field name="called_id"/>
+                        <field name="called_id_name"/>
                         <field name="user_id"/>
                         <field name="partner_id"/>
                     </group>
@@ -27,7 +29,7 @@
         <field name="name">view.phone.cdr.tree</field>
         <field name="model">phone.cdr</field>
         <field name="arch" type="xml">
-            <tree edit="false" create="false" delete="false">
+            <tree edit="true" create="true" delete="true">
                 <field name="guid" />
                 <field name="inbound_flag" />
                 <field name="call_start_time" />
@@ -35,6 +37,8 @@
                 <field name="ring_time" />
                 <field name="caller_id" />
                 <field name="caller_id_name" />
+                <field name="called_id"/>
+                <field name="called_id_name"/>
                 <field name="user_id"/>
                 <field name="partner_id"/>
             </tree>
@@ -57,6 +61,7 @@
         <field name="view_id" ref="view_phone_cdr_tree"/>
         <field name="res_model">phone.cdr</field>
         <field name="view_type">form</field>
+        <field name="domain">[]</field>
         <field name="view_mode">tree,form,pivot</field>
     </record>
 

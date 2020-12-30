@@ -1,19 +1,58 @@
 from odoo import api, models, _
+from odoo.exceptions import UserError
 from odoo.addons.web.controllers.main import clean_action
 import logging
 logger = logging.getLogger(__name__)
+
+import requests
+
+import hashlib
+import urllib
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     @api.multi
-    def call_notification(self):
-        # TODO 
-        # Put the real code
-        # Just to test the Incoming Pop up this method is added later will remove.
-        rec = self.env['phone.common'].incall_notify_by_login(
-            self.phone, [self.env.user.login])
+    def outgoing_call_notification(self):
+        # For Outgoing Calls
+        if not self.env.user.company_id.server_address:
+            raise UserError("Please specify server address in Company Setting")
+        server = self.env.user.company_id.server_address + '/DialNumber/?'
+        number = self.phone  # Fetched from partner
+
+        user = self.env.user
+        ext = user.external_code  # Fetched from user
+        cid = user.related_phone  # Fetched from user
+        cidname = user.name  # Fetched from user
+        password = user.phone_password  # Fetched from user
+
+        if not password:
+            raise UserError("No password configured on User")
+
+        # Generate AUTH via sha1
+        hash_object = hashlib.sha1((password + ext).encode('utf-8'))
+        auth = hash_object.hexdigest()
+
+        payload = {"ext" : ext,
+                   "number": number,
+                   "cid": cid,
+                   "cidname" : cidname,
+                   "auth" : auth
+                   }
+        payload = urllib.parse.urlencode(payload)
+        url = server + payload
+        logger.info("URL ---- %s", url)
+        response = requests.get(url=url, params={})
+        # ToDo : This should be modified based on real response
+        if response.status_code in (400, 401, 404, 500):
+            error_msg = _(
+                "Request Call failed with Status %s.\n\n"
+                "Request:\nGET %s\n\n"
+                "Response:\n%s"
+            ) % (response.status_code, url or "", response.text)
+            _logger.error(error_msg)
+        logger.info("response ----", response.text)
 
     @api.multi
     def incoming_call_notification(self):
@@ -27,46 +66,3 @@ class ResPartner(models.Model):
             'res_id': self.id
         }
         return action
-
-
-class PhoneCommon(models.AbstractModel):
-    _inherit = 'phone.common'
-
-    @api.model
-    def incall_notify_by_login(self, number, login_list):
-        assert isinstance(login_list, list), 'login_list must be a list'
-        res = self.get_record_from_phone_number(number)
-        res_id = 0
-        if res:
-            res_id = self.env['res.partner'].search(
-                [('phone', '=', number)]).id
-        users = self.env['res.users'].search(
-            [('login', 'in', login_list)])
-#         logger.info(
-#             'Notify incoming call from number %s to user IDs %s'
-#             % (number, users.ids))
-        action = self._prepare_incall_pop_action(res, number)
-        action = clean_action(action)
-        if action:
-            for user in users:
-                channel = 'notify_info_%s' % user.id
-                bus_message = {
-                    'message': _('Incoming call : ' + user.name),
-                    'title': _('Incoming call'),
-                    'action': action,
-                    # 'sticky': True,
-                    'action_link_name': 'action_link_name',
-                    'notification': 'OutGoingNotification',
-                    'id': res_id,
-                }
-
-                self.sudo().env['bus.bus'].sendone(
-                    channel, bus_message)
-                logger.debug(
-                    'This action has been sent to user ID %d: %s'
-                    % (user.id, action))
-        if res:
-            callerid = res[2]
-        else:
-            callerid = False
-        return callerid

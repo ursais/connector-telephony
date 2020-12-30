@@ -39,7 +39,7 @@ odoo.define('connector_phone_palitto_event_manager.connector_phone_palitto_event
                     var self = this;
                     this._rpc({
                             model: 'res.partner',
-                            method: 'call_notification',
+                            method: 'outgoing_call_notification',
                             args: [[this.eid]]
                         })
                         .then(function (r) {
