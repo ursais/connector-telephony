@@ -1,7 +1,7 @@
-from odoo import api, fields, models, _
+from odoo import fields, models
 
 
 class ResCompany(models.Model):
-    _inherit = 'res.company'
+    _inherit = "res.company"
 
-    server_address = fields.Char('PCS API Server Address')
+    server_address = fields.Char("PCS API Server Address")
