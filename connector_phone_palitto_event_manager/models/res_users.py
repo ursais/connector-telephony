@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-
-from odoo import models, fields
+from odoo import fields, models
 
 
 class ResUsers(models.Model):
-    _inherit = 'res.users'
+    _inherit = "res.users"
 
-    external_code = fields.Char('External Code')
+    external_code = fields.Char("External Code")
