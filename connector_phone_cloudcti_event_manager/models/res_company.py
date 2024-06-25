@@ -8,7 +8,7 @@ class ResCompany(models.Model):
         "CloudCTI Base URL", default="https://api.cloudcti.nl/api/v2"
     )
     cloudcti_out_url = fields.Char(
-        "CloudCTI Signin URL",
+        "CloudCTI Out URL",
         default="https://useraccount.cloudcti.nl/phone/api/callcontrol",
     )
     cloudcti_signin_url = fields.Char(
