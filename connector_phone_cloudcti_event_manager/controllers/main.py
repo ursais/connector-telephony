@@ -49,7 +49,7 @@ class CloudCTIVOIP(http.Controller):
 
     def convert_into_correct_timezone(self, record_date, user):
         # CloudCTI provides date in UTC, so no conversion needed.
-        return re.sub(r"[TtzZ]", "", record_date)
+        return re.sub(r"[Tt]", " ", re.sub(r"[zZ]", "", record_date))
         record_date = datetime.strptime(record_date, "%Y-%m-%d %H:%M:%S")
         timezone = request.env.context.get("tz", False) or user.partner_id.tz
         return_date = None
