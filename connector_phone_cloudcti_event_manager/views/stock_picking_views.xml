@@ -13,7 +13,7 @@
                         widget="mask"
                         data-inputmask="'mask': '(999) 999-9999'"
                     />
-                    <butto
+                    <button
                         type="object"
                         name="cloudcti_open_outgoing_notification"
                         class="btn-sm btn-link mb4 fa fa-phone"
@@ -30,7 +30,7 @@
                         widget="mask"
                         data-inputmask="'mask': '(999) 999-9999'"
                     />
-                    <butto
+                    <button
                         type="object"
                         name="cloudcti_open_outgoing_notification"
                         class="btn-sm btn-link mb4 fa fa-phone"
